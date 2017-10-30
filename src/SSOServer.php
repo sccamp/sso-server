@@ -115,16 +115,11 @@ class SSOServer
             return;
         }
 
-        error_log('***** GET PATH *****');
-        error_log($path);
-
         $rawData = file_get_contents($path);
         $data = unserialize($rawData);
         if (!$data) {
             return;
         }
-
-        error_log('DATA: ' . print_r($data, true));
 
         return $data['value'];
     }
@@ -376,6 +371,8 @@ class SSOServer
 
         if ($username) {
             $user = $this->getUserInfo($username);
+            error_log('BrokerSessionId: '.$this->getBrokerSessionID());
+            $user['sessionId'] = $this->getCache($this->getBrokerSessionID());
             if (!$user) return $this->fail("User not found", 500); // Shouldn't happen
         }
 
